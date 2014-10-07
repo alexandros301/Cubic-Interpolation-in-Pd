@@ -1,0 +1,410 @@
+#N canvas 509 34 406 647 10;
+#X obj 3 3 cnv 15 400 640 empty empty empty 20 12 0 14 -208387 -66577
+0;
+#N canvas 144 317 805 384 implementation 0;
+#N canvas 0 22 450 278 (subpatch) 0;
+#X array sine 2051 float 2;
+#X coords 0 1 2051 -1 200 140 1;
+#X restore 157 49 graph;
+#X obj 20 174 s sine;
+#X floatatom 24 267 5 0 0 0 - - -, f 5;
+#X obj 24 288 tabread sine;
+#X floatatom 24 310 7 0 0 0 - - -, f 7;
+#X text 105 287 check the values here;
+#X obj 405 221 dac~;
+#X text 19 131 Click here first;
+#X obj 405 95 tabosc4~ sine;
+#X floatatom 405 70 5 0 0 0 - - -, f 5;
+#X text 403 47 Read the table with [tabosc4~];
+#X obj 405 187 *~ 1;
+#X text 488 88 [tabosc4~] reads through index(1) to index(2048);
+#X text 490 102 and does a four point interpolation;
+#X msg 20 152 cosinesum 2048 0 1;
+#X text 18 194 right click on the array and choose properties to see
+its size. With 'cosinesum' Pd automatically adds one index to the beginning
+and two to the end of the array and makes the necessary copies.;
+#N canvas 0 22 450 300 vis_and_show 0;
+#X obj 86 45 inlet;
+#X obj 86 67 t f f f;
+#X msg 86 159 vis \$1;
+#X obj 86 181 s pd-other_input;
+#X obj 105 137 s first_subpatch;
+#X obj 125 90 == 0;
+#X obj 125 112 outlet;
+#X obj 136 14 loadbang;
+#X msg 136 36 0;
+#N canvas 76 45 1075 608 other_input 0;
+#X obj 556 64 cnv 15 240 475 empty empty empty 20 12 0 14 -232515 -66577
+0;
+#N canvas 0 22 450 278 (subpatch) 0;
+#X array array1 1024 float 2;
+#X coords 0 1 1024 -1 200 140 1;
+#X restore 563 103 graph;
+#N canvas 0 22 450 278 (subpatch) 0;
+#X array array2 1027 float 2;
+#X coords 0 1 1027 -1 200 140 1 0 0;
+#X restore 563 327 graph;
+#X floatatom 563 472 5 0 0 0 - - -, f 5;
+#X floatatom 563 515 5 0 0 0 - - -, f 5;
+#X floatatom 563 248 5 0 0 0 - - -, f 5;
+#X floatatom 563 291 5 0 0 0 - - -, f 5;
+#X obj 563 269 tabread array1;
+#X text 562 70 Compare the elements of the two arrays;
+#X obj 563 493 tabread array2;
+#X obj 803 9 cnv 15 255 530 empty empty empty 20 12 0 14 -140992 -66577
+0;
+#X obj 808 51 phasor~;
+#X obj 808 94 *~;
+#X obj 808 116 +~ 1;
+#X text 834 92 scale to length - additional points;
+#X floatatom 808 30 5 0 0 0 - - -, f 5;
+#X obj 808 138 tabread4~ array2;
+#X obj 846 259 tabosc4~ array2;
+#X obj 808 352 dac~;
+#X obj 808 255 *~;
+#X obj 846 281 *~;
+#X obj 834 180 vradio 15 1 0 2 empty empty empty 0 -8 0 10 -262144
+-1 -1 1;
+#X obj 834 216 t f f;
+#X obj 823 73 r length;
+#X text 804 370 [tabosc4~] can only read tables that;
+#X text 806 400 If your table's size is different you;
+#X text 807 414 should use [tabread4~];
+#X text 839 114 add 1 so to not send index 0;
+#X obj 14 18 cnv 15 370 50 empty empty 1 0 -8 0 14 -202317 -66577 0
+;
+#X text 18 21 If you want to draw values by hand or some mathematical
+equation \, you could use this technique so that cubic interpolation
+is meaningful.;
+#X obj 14 88 cnv 15 370 40 empty empty 2 0 -8 0 14 -222926 -66577 0
+;
+#X text 18 92 First draw some values with the mouse in array1 \, then
+click the bang below;
+#X obj 14 149 cnv 15 370 390 empty empty 3 0 -8 0 14 -251920 -66577
+0;
+#X text 15 155 This will first resize array2 to the size of array1
++ 3 and then copy array1 to array2 with an index offset of 1;
+#X obj 390 149 cnv 15 160 390 empty empty 4 0 -8 0 14 -260179 -66577
+0;
+#X obj 17 225 arraysize array1;
+#X msg 89 374 resize \$1;
+#X obj 17 372 until;
+#X obj 17 414 f;
+#X obj 44 414 + 1;
+#X msg 32 393 0;
+#X obj 36 459 tabread array1;
+#X obj 123 486 + 1;
+#X obj 36 511 tabwrite array2;
+#X obj 17 192 bng 20 250 50 0 empty empty bang_me! 22 7 0 14 -4034
+-1 -1;
+#X obj 395 226 sel;
+#X obj 17 436 t f f f;
+#X obj 410 204 - 1;
+#X msg 395 252 3;
+#X obj 395 274 until;
+#X obj 395 319 f;
+#X obj 421 319 + 1;
+#X msg 410 298 0;
+#X obj 17 281 t f b b;
+#X obj 482 368 moses 1;
+#X obj 521 455 +;
+#X obj 395 472 tabwrite array2;
+#X obj 395 351 t f f;
+#X obj 395 447 tabread array1;
+#X obj 395 424 mod;
+#X obj 395 399 +;
+#X obj 410 376 - 1;
+#X obj 89 352 + 3;
+#X obj 17 304 t f f f f f f f;
+#X obj 123 321 s length;
+#X floatatom 808 433 5 0 0 0 - - -, f 5;
+#X msg 808 454 resize \$1;
+#X obj 808 476 s array1;
+#X obj 89 396 s array2;
+#X text 88 411 there's some bug when resizing an array and it;
+#X text 87 423 seems to give one more index \, but this looks;
+#X text 86 436 like the way to go \, anyway.;
+#X text 396 154 Eventually it makes the;
+#X text 396 167 necessary copies to the;
+#X text 396 180 additional points;
+#X obj 138 212 loadbang;
+#X text 807 12 Play with [tabread4~] and [tabosc4~];
+#X msg 138 236 1024;
+#X obj 138 258 t f f;
+#X msg 165 279 resize \$1;
+#X obj 165 301 s array1;
+#X obj 834 159 loadbang;
+#X text 851 178 choose [tabread4~];
+#X text 851 193 choose [tabosc4~];
+#X text 807 508 a non power of 2 \, click the bang button;
+#X text 807 494 choose [tabosc4~] above \, resize array1 to;
+#X text 807 522 and see what happens;
+#X text 807 386 have a size of a power of 2 plus three.;
+#X text 856 49 ramp from 0 to 1;
+#X text 596 248 set index;
+#X text 597 292 receive value;
+#X text 596 472 set index;
+#X text 596 514 receive value;
+#X obj 834 238 == 0;
+#X obj 808 321 *~ 0;
+#X obj 829 301 r first_subpatch;
+#N canvas 0 22 450 300 vis_and_show 0;
+#X obj 86 45 inlet;
+#X msg 86 139 vis \$1;
+#X obj 113 90 == 0;
+#X obj 86 161 s pd-same_technique_with_one_array;
+#X obj 113 112 s first_subpatch;
+#X obj 86 67 t f f;
+#N canvas 445 22 521 744 same_technique_with_one_array 0;
+#N canvas 0 22 450 278 (subpatch) 0;
+#X array resize_table 19 float 2;
+#X coords 0 1 19 -1 200 140 1;
+#X restore 297 313 graph;
+#X msg 44 511 resize \$1;
+#X obj 29 555 until;
+#X obj 29 597 f;
+#X obj 171 669 + 1;
+#X obj 29 407 bng 20 250 50 0 empty empty bang_me! 22 7 0 14 -4034
+-1 -1;
+#X obj 29 619 t f f f;
+#X msg 203 438 3;
+#X obj 203 460 until;
+#X obj 203 505 f;
+#X obj 229 505 + 1;
+#X msg 218 484 0;
+#X obj 326 554 moses 1;
+#X obj 365 631 +;
+#X obj 203 537 t f f;
+#X obj 203 584 +;
+#X obj 44 489 + 3;
+#X obj 30 309 loadbang;
+#X msg 30 358 resize \$1;
+#X obj 56 597 - 1;
+#X obj 44 576 - 1;
+#X obj 203 412 sel 0;
+#X msg 30 333 16;
+#X obj 203 561 moses 1;
+#X obj 29 467 t f f f f f b;
+#X floatatom 298 475 5 0 0 0 - - -, f 5;
+#X floatatom 298 518 5 0 0 0 - - -, f 5;
+#X floatatom 58 333 5 0 0 0 - - -, f 5;
+#X obj 30 380 s resize_table;
+#X obj 29 440 arraysize resize_table;
+#X obj 44 533 s resize_table;
+#X obj 48 642 tabread resize_table;
+#X obj 48 694 tabwrite resize_table;
+#X obj 203 623 tabread resize_table;
+#X obj 298 496 tabread resize_table;
+#X text 297 455 Compare values;
+#X text 93 333 change table's size;
+#X obj 203 648 tabwrite resize_table;
+#X text 385 137 ---->;
+#X obj 427 137 tabosc4~;
+#X msg 427 82 set array1;
+#X msg 440 106 set array2;
+#X text 20 176 The table below is initialized to a 16 elements size.
+Draw some values with the mouse and then click the bang below. Then
+compare the values of index 1 to index 17 \, of index 2 to index 18
+\, and finally of index 16 to index 0 \, they should be the same.;
+#X text 20 254 You can always change the size of the table using the
+number box below.;
+#X text 332 474 set index;
+#X text 333 518 receive value;
+#X text 20 6 This is the same technique of resizing a table and copying
+its elements to the appropriate additional indices \, but it uses only
+one array. In the previous example \, two arrays were used only for
+comparing the values and sizes of the two tables. If you're changing
+the contents of the table with the audio on \, Pd will throw an error
+message if you're reading the table with [tabosc4~] \, as you have
+to first resize it to a power of 2 \, and then add the three additional
+points \, but it's advisable to not change a table while reading it
+as it will cause audible clicks. Instead you should switch between
+tables by sending a [set nameoftable( message to [tabosc4~] (or [tabread4~]).
+;
+#X connect 1 0 30 0;
+#X connect 2 0 3 0;
+#X connect 3 0 6 0;
+#X connect 3 0 19 0;
+#X connect 4 0 32 1;
+#X connect 5 0 29 0;
+#X connect 6 0 21 0;
+#X connect 6 1 31 0;
+#X connect 6 2 4 0;
+#X connect 7 0 8 0;
+#X connect 8 0 9 0;
+#X connect 9 0 10 0;
+#X connect 9 0 14 0;
+#X connect 10 0 9 1;
+#X connect 11 0 9 1;
+#X connect 12 0 37 1;
+#X connect 12 1 13 0;
+#X connect 13 0 37 1;
+#X connect 14 0 23 0;
+#X connect 14 1 12 0;
+#X connect 15 0 33 0;
+#X connect 16 0 1 0;
+#X connect 17 0 22 0;
+#X connect 18 0 28 0;
+#X connect 19 0 3 1;
+#X connect 20 0 3 1;
+#X connect 21 0 7 0;
+#X connect 22 0 18 0;
+#X connect 23 0 15 0;
+#X connect 23 1 33 0;
+#X connect 24 0 2 0;
+#X connect 24 1 16 0;
+#X connect 24 2 20 0;
+#X connect 24 3 15 1;
+#X connect 24 4 13 1;
+#X connect 24 5 11 0;
+#X connect 25 0 34 0;
+#X connect 27 0 18 0;
+#X connect 29 0 24 0;
+#X connect 31 0 32 0;
+#X connect 33 0 37 0;
+#X connect 34 0 26 0;
+#X connect 40 0 39 0;
+#X connect 41 0 39 0;
+#X restore 85 185 pd same_technique_with_one_array;
+#X connect 0 0 5 0;
+#X connect 1 0 3 0;
+#X connect 2 0 4 0;
+#X connect 5 0 1 0;
+#X connect 5 1 2 0;
+#X restore 14 568 pd vis_and_show;
+#X obj 14 548 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X text 31 547 <- click here to read further;
+#X connect 3 0 9 0;
+#X connect 5 0 7 0;
+#X connect 7 0 6 0;
+#X connect 9 0 4 0;
+#X connect 11 0 12 0;
+#X connect 12 0 13 0;
+#X connect 13 0 16 0;
+#X connect 15 0 11 0;
+#X connect 15 0 17 0;
+#X connect 16 0 19 0;
+#X connect 17 0 20 0;
+#X connect 19 0 94 0;
+#X connect 20 0 94 0;
+#X connect 21 0 22 0;
+#X connect 22 0 93 0;
+#X connect 22 1 20 1;
+#X connect 23 0 12 1;
+#X connect 35 0 53 0;
+#X connect 36 0 68 0;
+#X connect 37 0 38 0;
+#X connect 38 0 39 0;
+#X connect 38 0 46 0;
+#X connect 39 0 38 1;
+#X connect 40 0 38 1;
+#X connect 41 0 43 0;
+#X connect 42 0 43 1;
+#X connect 44 0 35 0;
+#X connect 45 0 48 0;
+#X connect 46 0 45 0;
+#X connect 46 1 41 0;
+#X connect 46 2 42 0;
+#X connect 47 0 45 1;
+#X connect 48 0 49 0;
+#X connect 49 0 50 0;
+#X connect 50 0 51 0;
+#X connect 50 0 57 0;
+#X connect 51 0 50 1;
+#X connect 52 0 50 1;
+#X connect 53 0 63 0;
+#X connect 53 1 40 0;
+#X connect 53 2 52 0;
+#X connect 54 0 56 1;
+#X connect 54 1 55 0;
+#X connect 55 0 56 1;
+#X connect 57 0 60 0;
+#X connect 57 1 54 0;
+#X connect 58 0 56 0;
+#X connect 59 0 58 0;
+#X connect 60 0 59 0;
+#X connect 61 0 60 1;
+#X connect 62 0 36 0;
+#X connect 63 0 37 0;
+#X connect 63 1 59 1;
+#X connect 63 2 55 1;
+#X connect 63 3 61 0;
+#X connect 63 4 47 0;
+#X connect 63 5 62 0;
+#X connect 63 6 64 0;
+#X connect 65 0 66 0;
+#X connect 66 0 67 0;
+#X connect 75 0 77 0;
+#X connect 77 0 78 0;
+#X connect 78 0 62 0;
+#X connect 78 1 79 0;
+#X connect 79 0 80 0;
+#X connect 81 0 21 0;
+#X connect 93 0 19 1;
+#X connect 94 0 18 0;
+#X connect 94 0 18 1;
+#X connect 95 0 94 1;
+#X connect 97 0 96 0;
+#X restore 86 203 pd other_input;
+#X connect 0 0 1 0;
+#X connect 1 0 2 0;
+#X connect 1 1 4 0;
+#X connect 1 2 5 0;
+#X connect 2 0 3 0;
+#X connect 5 0 6 0;
+#X connect 7 0 8 0;
+#X connect 8 0 1 0;
+#X restore 426 165 pd vis_and_show;
+#X obj 426 145 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X text 443 144 <- click here to read further;
+#X connect 2 0 3 0;
+#X connect 3 0 4 0;
+#X connect 8 0 11 0;
+#X connect 9 0 8 0;
+#X connect 11 0 6 0;
+#X connect 11 0 6 1;
+#X connect 14 0 1 0;
+#X connect 16 0 11 1;
+#X connect 17 0 16 0;
+#X restore 24 611 pd implementation;
+#X text 22 97 The increment of indexing when reading a table with these
+objects depends on the frequency provided to them. This can create
+an increment that's not an integer \, resulting in decimal index values.
+In this case [tabread~] will just truncate that value and use its integral
+part as the index to read from \, which can result in loss of accuracy.
+;
+#X text 22 18 [tabread~] \, [tabread4~] and [tabosc4~] are audio objects
+that read values from a specified table (a.k.a. array). Tables have
+a value y for a corresponding index x \, where indices are integers
+from 0 to the length of the table minus 1 (e.g. a table of size 100
+has indices from 0 to 99).;
+#X text 20 188 [tabread4~] (and [tabosc4~]) does a four point interpolation.
+This means that when it receives an index number that's not an integer
+(e.g. 1.5) the value it outputs is a cubic interpolation between the
+values of the truncation of that index number \, the index before that
+and two indices after (e.g. for 1.5 \, the indices 0 \, 1 \, 2 \, 3
+will be used). It then applies a third order polynomial with the values
+of these indices: y = ax^3 + bx^2 + cx + d This makes it more accurate
+than [tabread~].;
+#X text 22 513 So \, the waveform read by [tabread4~] and [tabosc4~]
+must start at index(1) and end at index(length - 3). Index(0) \, index(length
+- 2) and index(length - 1) are called the 'guard points' and they contain
+copies of the last and first two elements of the waveform \, respectively
+(stored at index(length - 3) \, index(1) and index(2) respectively).
+;
+#X text 21 318 Indices sent to [tabread4~] should be 1<= index < table
+length - 2 . For example \, when [tabread4~] receives a value of 6.3
+\, it will truncate it and will use indices 5 \, 6 \, 7 \, 8 (the truncation
+\, one before it and two after). When it receives a value of 1.2 \,
+it will use 0 \, 1 \, 2 \, 3 \, when it receives a value of (table
+length -3) \, it will use indices (table length - 4) \, (table length
+- 3) \, (table length - 2) and (table legth -1). If it receives a value
+of 0 (or 0.something) it won't have an index before that (there's no
+index(-1)) \, and if it receives a value > (table length -3) \, it
+won't have two indices after (table indices always count from 0 to
+length - 1 \, so if it receives (table length - 2) \, it will have
+only one index after it \, and if it receives (table length - 1) \,
+it will have no indices after it).;
+#X text 133 610 <- click on the subpatch;
